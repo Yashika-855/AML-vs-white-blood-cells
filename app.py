@@ -16,49 +16,83 @@ st.set_page_config(
 # ====================== CUSTOM CSS ======================
 st.markdown("""
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=Source+Sans+3:wght@400;500;600&display=swap');
+
+    html, body, [class*="css"] {
+        font-family: 'Source Sans 3', sans-serif;
+    }
+
     .main {
-        background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%);
-        color: #e2e8f0;
+        background: #FBF1EF;
+        color: #3A2E2C;
     }
     .stApp {
-        background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%);
+        background: #FBF1EF;
+    }
+
+    h1, h2, h3 {
+        font-family: 'Source Serif 4', Georgia, serif;
+        color: #3A2E2C;
+        font-weight: 600;
+        letter-spacing: -0.01em;
     }
     h1 {
-        font-family: 'Segoe UI', sans-serif;
-        background: linear-gradient(90deg, #f87171, #fb923c);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
         text-align: center;
-        font-weight: 700;
+        font-size: 2.4rem !important;
+        border-bottom: 1px solid #E3C9C5;
+        padding-bottom: 0.6rem;
     }
+    h5, .stMarkdown p em {
+        font-family: 'Source Serif 4', Georgia, serif;
+        font-style: italic;
+        color: #8C6B66;
+    }
+
+    /* Sidebar */
+    [data-testid="stSidebar"] {
+        background: #F6E4E1;
+        border-right: 1px solid #E3C9C5;
+    }
+    [data-testid="stSidebar"] h1 {
+        font-size: 1.5rem !important;
+        border-bottom: none;
+        text-align: left;
+    }
+
     .upload-section {
-        border: 2px dashed #64748b;
-        border-radius: 20px;
+        border: 1.5px dashed #C99A94;
+        border-radius: 14px;
         padding: 2rem;
         text-align: center;
-        transition: all 0.3s ease;
+        background: #FEFBFA;
+        transition: all 0.25s ease;
     }
     .upload-section:hover {
-        border-color: #f87171;
-        background: rgba(248, 113, 113, 0.1);
+        border-color: #B5413A;
+        background: #FCEFED;
     }
+
     .result-card {
-        border-radius: 15px;
+        border-radius: 12px;
         padding: 1.5rem;
         margin: 1rem 0;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        font-family: 'Source Serif 4', Georgia, serif;
+        box-shadow: 0 4px 16px rgba(150, 60, 50, 0.08);
+        border: 1px solid rgba(0,0,0,0.04);
     }
     .aml-card {
-        background: linear-gradient(135deg, #7f1d1d, #991b1b);
-        color: white;
+        background: #FBE2DF;
+        color: #7A2E27;
+        border-left: 4px solid #B5413A;
     }
     .normal-card {
-        background: linear-gradient(135deg, #166534, #14532d);
-        color: white;
+        background: #E9F2E7;
+        color: #355E3B;
+        border-left: 4px solid #5C8A5C;
     }
     .confidence-bar {
-        height: 12px;
-        background: #334155;
+        height: 10px;
+        background: #EFE0DD;
         border-radius: 9999px;
         overflow: hidden;
         margin: 10px 0;
@@ -66,7 +100,17 @@ st.markdown("""
     .confidence-fill {
         height: 100%;
         border-radius: 9999px;
+        background: #B5413A;
         transition: width 1.5s ease;
+    }
+
+    /* Streamlit's own progress bar accent */
+    div[data-testid="stProgress"] > div > div > div {
+        background-color: #B5413A;
+    }
+
+    div[data-testid="stFileUploader"] section {
+        background: transparent;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -198,7 +242,7 @@ else:
 # ====================== FOOTER ======================
 st.divider()
 st.markdown("""
-    <div style="text-align: center; color: #64748b; font-size: 0.9rem;">
+    <div style="text-align: center; color: #A6837D; font-size: 0.9rem; font-family: 'Source Serif 4', Georgia, serif; font-style: italic;">
         Disclaimer: This tool is for educational and research purposes only.
         Not a substitute for professional medical diagnosis.
     </div>
