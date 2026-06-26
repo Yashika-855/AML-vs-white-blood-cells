@@ -2,18 +2,21 @@ import streamlit as st
 import tensorflow as tf
 import numpy as np
 from PIL import Image
-import time
 
-# ================= CONFIG =================
+# ==========================
+# PAGE CONFIG
+# ==========================
 st.set_page_config(
-    page_title="AML vs WBC Classifier",
+    page_title="AML Blood Cell Detector",
     page_icon="🩸",
     layout="centered"
 )
 
 IMG_SIZE = (224, 224)
 
-# ================= LOAD MODEL =================
+# ==========================
+# LOAD MODEL
+# ==========================
 @st.cache_resource
 def load_model():
     model = tf.keras.models.load_model("aml_wbc_classifier.keras")
@@ -21,85 +24,104 @@ def load_model():
 
 model = load_model()
 
-# ================= UI =================
+# ==========================
+# TITLE
+# ==========================
 st.title("🩸 AML vs White Blood Cell Classifier")
-st.markdown(
-    "Upload a microscopic blood smear image and the model will classify it as **AML Cancer Cell** or **Normal White Blood Cell**."
+st.write(
+    "Upload a microscopic blood smear image. "
+    "The AI model predicts whether it is **AML (Acute Myeloid Leukemia)** "
+    "or a **Normal White Blood Cell**."
 )
 
+st.markdown("---")
+
+# ==========================
+# FILE UPLOAD
+# ==========================
 uploaded_file = st.file_uploader(
-    "Upload Image",
+    "Upload Blood Cell Image",
     type=["jpg", "jpeg", "png", "tiff"]
 )
 
-# ================= PREDICTION =================
+# ==========================
+# PREDICTION FUNCTION
+# ==========================
+def predict_image(img):
+
+    # resize
+    img = img.resize(IMG_SIZE)
+
+    # convert to numpy
+    img_array = np.array(img, dtype=np.float32)
+
+    # SAME preprocessing used in training
+    img_array = img_array / 255.0
+
+    # batch dimension
+    img_array = np.expand_dims(img_array, axis=0)
+
+    # prediction
+    prediction = model.predict(img_array, verbose=0)
+
+    return float(prediction[0][0])
+
+# ==========================
+# RUN PREDICTION
+# ==========================
 if uploaded_file is not None:
 
-    try:
-        # show uploaded image
-        img = Image.open(uploaded_file).convert("RGB")
+    # open image
+    image = Image.open(uploaded_file).convert("RGB")
 
-        col1, col2 = st.columns([1, 1])
+    col1, col2 = st.columns(2)
 
-        with col1:
-            st.image(img, caption="Uploaded Image", use_container_width=True)
+    with col1:
+        st.image(image, caption="Uploaded Image", use_container_width=True)
 
-        with col2:
-            st.write("Processing...")
+    with col2:
 
-            progress = st.progress(0)
+        with st.spinner("Analyzing image..."):
 
-            for i in range(100):
-                time.sleep(0.01)
-                progress.progress(i + 1)
+            confidence = predict_image(image)
 
-            # preprocessing (same as training)
-            img_resized = img.resize(IMG_SIZE)
-
-            img_array = np.array(img_resized, dtype=np.float32)
-
-            # IMPORTANT: same preprocessing as training
-            img_array = img_array / 255.0
-
-            img_array = np.expand_dims(img_array, axis=0)
-
-            # prediction
-            prediction = model.predict(img_array, verbose=0)
-
-            confidence = float(prediction[0][0])
-
-            st.write("Raw model output:", confidence)
-
-            # class mapping
+            # IMPORTANT:
             # AML = 0
             # NORMAL = 1
 
             if confidence < 0.5:
-                label = "⚠ AML CELL DETECTED"
-                prob = (1 - confidence) * 100
 
-                st.error(label)
+                prediction = "⚠ AML CELL DETECTED"
+
+                # if model says AML
+                confidence_score = (1 - confidence) * 100
+
+                st.error(prediction)
 
             else:
-                label = "✅ NORMAL WHITE BLOOD CELL"
-                prob = confidence * 100
 
-                st.success(label)
+                prediction = "✅ NORMAL WHITE BLOOD CELL"
 
-            st.subheader("Confidence")
+                confidence_score = confidence * 100
 
-            st.progress(prob / 100)
+                st.success(prediction)
 
-            st.write(f"{prob:.2f}% confidence")
+            st.subheader("Confidence Score")
 
-    except Exception as e:
-        st.error(f"Error: {e}")
+            st.progress(confidence_score / 100)
+
+            st.write(f"**{confidence_score:.2f}% confidence**")
+
+            # debug (remove later)
+            st.write("Raw Model Output:", round(confidence, 4))
 
 else:
-    st.info("Upload an image to begin.")
+    st.info("Please upload an image to start prediction.")
 
-# ================= FOOTER =================
+# ==========================
+# FOOTER
+# ==========================
 st.markdown("---")
 st.caption(
-    "For educational / research use only. Not a medical diagnostic tool."
+    "Educational / Research Use Only • Not a Medical Diagnostic Tool"
 )
