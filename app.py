@@ -17,25 +17,26 @@ IMG_SIZE = (224, 224)
 # ==========================
 # THEME / CUSTOM STYLING
 # ==========================
-# Palette is drawn from the subject itself: a dim hematology-lab navy
-# (like a microscope viewport) with accent colors pulled from a
-# Wright-Giemsa blood stain -- teal for the field, red reserved only
-# for the AML-positive alert so it carries real diagnostic weight.
+# Palette is drawn from the subject itself: a subtle dark wine/maroon
+# background (like a stained slide under dim light) with accent colors
+# pulled from a Wright-Giemsa blood stain -- teal for the field, a
+# brighter red reserved only for the AML-positive alert so it carries
+# real diagnostic weight against the muted backdrop.
 st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
     :root {
-        --bg: #0F1620;
-        --surface: #161F2C;
-        --surface-raised: #1C2733;
-        --border: #2A3744;
-        --text: #E8EDF2;
-        --text-dim: #8C9AAA;
+        --bg: #1A1012;
+        --surface: #241419;
+        --surface-raised: #2C1820;
+        --border: #3D2229;
+        --text: #F0E6E8;
+        --text-dim: #A88C91;
         --teal: #5FB3A3;
         --teal-dim: #3D7A6F;
-        --alert: #E0483E;
+        --alert: #E8554A;
         --alert-dim: #8A2E28;
     }
 
@@ -44,7 +45,7 @@ st.markdown(
     }
 
     .stApp {
-        background: linear-gradient(180deg, var(--bg) 0%, #0B1118 100%);
+        background: linear-gradient(180deg, var(--bg) 0%, #120C0D 100%);
         color: var(--text);
     }
 
