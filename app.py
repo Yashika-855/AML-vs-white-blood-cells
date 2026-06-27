@@ -17,27 +17,27 @@ IMG_SIZE = (224, 224)
 # ==========================
 # THEME / CUSTOM STYLING
 # ==========================
-# Palette is drawn from the subject itself: a subtle dark wine/maroon
-# background (like a stained slide under dim light) with accent colors
-# pulled from a Wright-Giemsa blood stain -- teal for the field, a
-# brighter red reserved only for the AML-positive alert so it carries
-# real diagnostic weight against the muted backdrop.
+# Palette is drawn from the subject itself: a subtle pale pink
+# background (like a stained slide held up to bright light) with accent
+# colors pulled from a Wright-Giemsa blood stain -- teal for the field,
+# a saturated red reserved only for the AML-positive alert so it
+# carries real diagnostic weight against the soft backdrop.
 st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 
     :root {
-        --bg: #1A1012;
-        --surface: #241419;
-        --surface-raised: #2C1820;
-        --border: #3D2229;
-        --text: #F0E6E8;
-        --text-dim: #A88C91;
-        --teal: #5FB3A3;
-        --teal-dim: #3D7A6F;
-        --alert: #E8554A;
-        --alert-dim: #8A2E28;
+        --bg: #FBF0EF;
+        --surface: #FFFFFF;
+        --surface-raised: #FDF6F5;
+        --border: #ECD9D7;
+        --text: #2E2326;
+        --text-dim: #8C7679;
+        --teal: #3D8C7D;
+        --teal-dim: #BFE0D9;
+        --alert: #C5392E;
+        --alert-dim: #F2C9C5;
     }
 
     html, body, [class*="css"] {
@@ -45,7 +45,7 @@ st.markdown(
     }
 
     .stApp {
-        background: linear-gradient(180deg, var(--bg) 0%, #120C0D 100%);
+        background: linear-gradient(180deg, var(--bg) 0%, #F6E4E2 100%);
         color: var(--text);
     }
 
