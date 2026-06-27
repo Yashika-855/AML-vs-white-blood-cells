@@ -15,6 +15,156 @@ st.set_page_config(
 IMG_SIZE = (224, 224)
 
 # ==========================
+# THEME / CUSTOM STYLING
+# ==========================
+# Palette is drawn from the subject itself: a dim hematology-lab navy
+# (like a microscope viewport) with accent colors pulled from a
+# Wright-Giemsa blood stain -- teal for the field, red reserved only
+# for the AML-positive alert so it carries real diagnostic weight.
+st.markdown(
+    """
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+
+    :root {
+        --bg: #0F1620;
+        --surface: #161F2C;
+        --surface-raised: #1C2733;
+        --border: #2A3744;
+        --text: #E8EDF2;
+        --text-dim: #8C9AAA;
+        --teal: #5FB3A3;
+        --teal-dim: #3D7A6F;
+        --alert: #E0483E;
+        --alert-dim: #8A2E28;
+    }
+
+    html, body, [class*="css"] {
+        font-family: 'Manrope', sans-serif;
+    }
+
+    .stApp {
+        background: linear-gradient(180deg, var(--bg) 0%, #0B1118 100%);
+        color: var(--text);
+    }
+
+    /* Hide default chrome that fights the custom look */
+    #MainMenu, footer, header { visibility: hidden; }
+
+    /* ---- Hero header ---- */
+    .lab-header {
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 1.4rem;
+        margin-bottom: 1.8rem;
+    }
+    .lab-eyebrow {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.72rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--teal);
+        margin-bottom: 0.4rem;
+    }
+    .lab-title {
+        font-size: 2.1rem;
+        font-weight: 800;
+        color: var(--text);
+        line-height: 1.15;
+        margin-bottom: 0.6rem;
+        letter-spacing: -0.01em;
+    }
+    .lab-subtitle {
+        font-size: 0.98rem;
+        color: var(--text-dim);
+        line-height: 1.55;
+        max-width: 38rem;
+    }
+    .lab-subtitle b { color: var(--text); font-weight: 600; }
+
+    /* ---- Upload zone ---- */
+    [data-testid="stFileUploaderDropzone"] {
+        background: var(--surface);
+        border: 1.5px dashed var(--border);
+        border-radius: 10px;
+    }
+    [data-testid="stFileUploaderDropzone"]:hover {
+        border-color: var(--teal-dim);
+    }
+
+    /* ---- Result card ---- */
+    .result-card {
+        border-radius: 12px;
+        padding: 1.4rem 1.5rem;
+        border: 1px solid var(--border);
+        background: var(--surface);
+        position: relative;
+        overflow: hidden;
+    }
+    .result-card.is-normal { border-color: var(--teal-dim); }
+    .result-card.is-aml { border-color: var(--alert-dim); }
+
+    .result-label {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        margin-bottom: 0.5rem;
+    }
+    .result-verdict {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-bottom: 0.9rem;
+    }
+    .result-verdict.is-normal { color: var(--teal); }
+    .result-verdict.is-aml { color: var(--alert); }
+
+    .confidence-readout {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1;
+    }
+    .confidence-caption {
+        font-size: 0.78rem;
+        color: var(--text-dim);
+        margin-top: 0.2rem;
+    }
+
+    /* Progress bar recolor */
+    .stProgress > div > div > div > div {
+        background: linear-gradient(90deg, var(--teal-dim), var(--teal));
+    }
+
+    /* ---- Footer ---- */
+    .lab-footer {
+        margin-top: 2.4rem;
+        padding-top: 1.2rem;
+        border-top: 1px solid var(--border);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.72rem;
+        color: var(--text-dim);
+        letter-spacing: 0.02em;
+        text-align: center;
+    }
+
+    /* Scoped overrides for default widgets to match the dark surface */
+    .stAlert {
+        background: var(--surface) !important;
+        border: 1px solid var(--border) !important;
+    }
+    [data-testid="stExpander"] {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# ==========================
 # LOAD MODEL
 # ==========================
 @st.cache_resource
@@ -25,22 +175,28 @@ def load_model():
 model = load_model()
 
 # ==========================
-# TITLE
+# HEADER
 # ==========================
-st.title("🩸 AML vs White Blood Cell Classifier")
-st.write(
-    "Upload a microscopic blood smear image. "
-    "The AI model predicts whether it is **AML (Acute Myeloid Leukemia)** "
-    "or a **Normal White Blood Cell**."
+st.markdown(
+    """
+    <div class="lab-header">
+        <div class="lab-eyebrow">HEMATOLOGY · IMAGE CLASSIFIER</div>
+        <div class="lab-title">🩸 AML vs White Blood Cell Classifier</div>
+        <div class="lab-subtitle">
+            Upload a microscopic blood smear image. The model predicts whether
+            the sample shows <b>AML (Acute Myeloid Leukemia)</b> or a
+            <b>normal white blood cell</b>.
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True
 )
-
-st.markdown("---")
 
 # ==========================
 # FILE UPLOAD
 # ==========================
 uploaded_file = st.file_uploader(
-    "Upload Blood Cell Image",
+    "Upload blood cell image",
     type=["jpg", "jpeg", "png", "tiff"]
 )
 
@@ -48,72 +204,63 @@ uploaded_file = st.file_uploader(
 # PREDICTION FUNCTION
 # ==========================
 def predict_image(img):
-
     # resize
     img = img.resize(IMG_SIZE)
-
-    # convert to numpy
+    # convert to numpy, keep RAW 0-255 pixel values
+    # NOTE: the model has its own built-in Rescaling + Normalization
+    # layers (EfficientNetB0 preprocessing), so do NOT divide by 255
+    # here -- doing so double-normalizes the input and corrupts predictions.
     img_array = np.array(img, dtype=np.float32)
-
-    # SAME preprocessing used in training
-    img_array = img_array / 255.0
-
     # batch dimension
     img_array = np.expand_dims(img_array, axis=0)
-
     # prediction
     prediction = model.predict(img_array, verbose=0)
-
     return float(prediction[0][0])
 
 # ==========================
 # RUN PREDICTION
 # ==========================
 if uploaded_file is not None:
-
-    # open image
     image = Image.open(uploaded_file).convert("RGB")
 
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2, gap="medium")
 
     with col1:
-        st.image(image, caption="Uploaded Image", use_container_width=True)
+        st.image(image, caption="Uploaded image", use_container_width=True)
 
     with col2:
-
         with st.spinner("Analyzing image..."):
-
             confidence = predict_image(image)
 
             # IMPORTANT:
             # AML = 0
             # NORMAL = 1
-
             if confidence < 0.5:
-
-                prediction = "⚠ AML CELL DETECTED"
-
-                # if model says AML
+                verdict_class = "is-aml"
+                verdict_text = "⚠ AML cell detected"
                 confidence_score = (1 - confidence) * 100
-
-                st.error(prediction)
-
             else:
-
-                prediction = "✅ NORMAL WHITE BLOOD CELL"
-
+                verdict_class = "is-normal"
+                verdict_text = "✅ Normal white blood cell"
                 confidence_score = confidence * 100
 
-                st.success(prediction)
-
-            st.subheader("Confidence Score")
-
+            st.markdown(
+                f"""
+                <div class="result-card {verdict_class}">
+                    <div class="result-label">Model Verdict</div>
+                    <div class="result-verdict {verdict_class}">{verdict_text}</div>
+                    <div class="confidence-readout">{confidence_score:.1f}%</div>
+                    <div class="confidence-caption">confidence score</div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+            st.write("")
             st.progress(confidence_score / 100)
 
-            st.write(f"**{confidence_score:.2f}% confidence**")
-
-            # debug (remove later)
-            st.write("Raw Model Output:", round(confidence, 4))
+            with st.expander("Show raw model output"):
+                st.code(f"sigmoid_output = {confidence:.4f}", language="text")
+                st.caption("Output < 0.5 → AML · Output ≥ 0.5 → Normal")
 
 else:
     st.info("Please upload an image to start prediction.")
@@ -121,7 +268,11 @@ else:
 # ==========================
 # FOOTER
 # ==========================
-st.markdown("---")
-st.caption(
-    "Educational / Research Use Only • Not a Medical Diagnostic Tool"
+st.markdown(
+    """
+    <div class="lab-footer">
+        EDUCATIONAL / RESEARCH USE ONLY · NOT A MEDICAL DIAGNOSTIC TOOL
+    </div>
+    """,
+    unsafe_allow_html=True
 )
